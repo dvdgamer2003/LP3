@@ -1,0 +1,104 @@
+import java.util.*;
+
+class QuickSort {
+
+    static int partition(int a[], int low, int high) {
+        int pivot = a[high];
+        int i = low - 1;
+
+        for (int j = low; j < high; j++) {
+            if (a[j] < pivot) {
+                i++;
+                int temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+            }
+        }
+
+        int temp = a[i + 1];
+        a[i + 1] = a[high];
+        a[high] = temp;
+
+        return i + 1;
+    }
+
+    // Deterministic Quick Sort
+    static void deterministic(int a[], int low, int high) {
+        if (low < high) {
+            int p = partition(a, low, high);
+            deterministic(a, low, p - 1);
+            deterministic(a, p + 1, high);
+        }
+    }
+
+    // Randomized Quick Sort
+    static void randomized(int a[], int low, int high) {
+        if (low < high) {
+            Random r = new Random();
+            int k = low + r.nextInt(high - low + 1);
+
+            int temp = a[k];
+            a[k] = a[high];
+            a[high] = temp;
+
+            int p = partition(a, low, high);
+
+            randomized(a, low, p - 1);
+            randomized(a, p + 1, high);
+        }
+    }
+
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter the size of the array: ");
+        int n = sc.nextInt();
+
+        int a[] = new int[n];
+
+        System.out.println("Enter the elements of the array:");
+        for (int i = 0; i < n; i++)
+            a[i] = sc.nextInt();
+
+        while (true) {
+            System.out.println("\nChoose Quick Sort Type:");
+            System.out.println("1. Deterministic Quick Sort");
+            System.out.println("2. Randomized Quick Sort");
+            System.out.println("3. Exit");
+
+            System.out.print("Enter your choice: ");
+            int ch = sc.nextInt();
+
+            if (ch == 3) {
+                System.out.println("Program Exited.");
+                break;
+            }
+
+            int b[] = a.clone();
+
+            System.out.print("Before Sorting: ");
+            for (int x : b)
+                System.out.print(x + " ");
+
+            if (ch == 1) {
+                deterministic(b, 0, n - 1);
+                System.out.print("\nAfter Deterministic Quick Sort: ");
+            } 
+            else if (ch == 2) {
+                randomized(b, 0, n - 1);
+                System.out.print("\nAfter Randomized Quick Sort: ");
+            } 
+            else {
+                System.out.println("Invalid Choice!");
+                continue;
+            }
+
+            for (int x : b)
+                System.out.print(x + " ");
+
+            System.out.println();
+        }
+
+        sc.close();
+    }
+}

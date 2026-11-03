@@ -1,0 +1,46 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import KMeans
+
+# Load dataset
+data = pd.read_csv("sales_data_sample.csv", encoding="Latin-1")
+
+# Select features
+X = data[['SALES', 'PRODUCTCODE']].copy()
+
+# Convert product code into numbers
+le = LabelEncoder()
+X['PRODUCTCODE'] = le.fit_transform(X['PRODUCTCODE'])
+
+# Elbow Method
+wcss = []
+
+for i in range(1, 11):
+    km = KMeans(n_clusters=i, random_state=0)
+    km.fit(X)
+    wcss.append(km.inertia_)
+
+# Plot Elbow graph
+plt.plot(range(1, 11), wcss, marker='o')
+plt.xlabel("Number of Clusters")
+plt.ylabel("WCSS")
+plt.title("Elbow Method")
+plt.show()
+
+# Apply K-Means
+kmeans = KMeans(n_clusters=4, random_state=0)
+y = kmeans.fit_predict(X)
+
+# Display results
+print("Cluster Labels:", y)
+print("Cluster Centres:", kmeans.cluster_centers_)
+print("Inertia:", kmeans.inertia_)
+
+# Display final clusters
+plt.scatter(X['SALES'], X['PRODUCTCODE'], c=y)
+plt.xlabel("SALES")
+plt.ylabel("PRODUCTCODE")
+plt.title("K-Means Clustering")
+plt.show()

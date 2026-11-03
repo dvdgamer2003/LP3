@@ -1,0 +1,62 @@
+
+# Step 1: Import libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Step 2: Load dataset
+df = pd.read_csv('emails.csv')
+print(df.head())
+
+# Step 3: Separate input and output
+X = df.iloc[:, 1:-1].values
+y = df.iloc[:, -1].values
+
+# Step 4: Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.30, random_state=101
+)
+
+# Step 5: Feature scaling
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# Step 6: Apply KNN
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+
+y_pred_knn = knn.predict(X_test)
+
+print("\nKNN Accuracy:", accuracy_score(y_test, y_pred_knn))
+print("KNN Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred_knn))
+print("KNN Classification Report:")
+print(classification_report(y_test, y_pred_knn))
+
+# Step 7: Apply SVM
+svm = SVC(kernel='linear')
+svm.fit(X_train, y_train)
+
+y_pred_svm = svm.predict(X_test)
+
+print("\nSVM Accuracy:", accuracy_score(y_test, y_pred_svm))
+print("SVM Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred_svm))
+print("SVM Classification Report:")
+print(classification_report(y_test, y_pred_svm))
+
+# Step 8: Compare accuracy
+knn_acc = accuracy_score(y_test, y_pred_knn)
+svm_acc = accuracy_score(y_test, y_pred_svm)
+
+print("\nKNN Accuracy:", knn_acc * 100, "%")
+print("SVM Accuracy:", svm_acc * 100, "%")
+
+if knn_acc > svm_acc:
+    print("KNN is better")
+else:
+    print("SVM is better")
